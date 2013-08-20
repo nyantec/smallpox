@@ -29,7 +29,6 @@ function smallpox(id, url, done) {
 		script = document.createElement('script');
 		script.type = 'application/javascript';
 		script.src = url;
-		script.defer = true;
 		script.async = true;
 		script.onload = function() {
 			buffer = document.spx;
