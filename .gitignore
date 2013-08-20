@@ -1,0 +1,6 @@
+# Hidden files
+.*
+!.gitignore
+
+# Minified JavaScript
+*.min.js
