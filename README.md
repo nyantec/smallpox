@@ -16,7 +16,7 @@ Include the script and call the `smallpox` function as follows:
     smallpox(id, url, done)
 
 * `id`: The ID of the element to capture the output in.
-* `url': The URL of the script to include.
+* `url`: The URL of the script to include.
 * `done`: An optional function to be called when the script has finished.
 
 ## Example
