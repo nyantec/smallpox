@@ -22,14 +22,14 @@ function smallpox(id, url, done) {
 						state = 1;
 				}
 
-				if (state == 1) {
+				else if (state == 1) {
 					if (char == '>')
 						state = 0;
 					else if (char == '=')
 						state = 2;
 				}
 
-				if (state == 2) {
+				else if (state == 2) {
 					if (char == '"')
 						state = 3;
 					else if (char == '\'')
@@ -41,17 +41,17 @@ function smallpox(id, url, done) {
 					}
 				}
 
-				if (state == 3) {
+				else if (state == 3) {
 					if (char == '"')
 						state = 1;
 				}
 
-				if (state == 4) {
+				else if (state == 4) {
 					if (char == '\'')
 						state = 1;
 				}
 
-				if (state == 5) {
+				else if (state == 5) {
 					if (char == ' ') {
 						state = 1;
 						clean += buffer.substring(head, tail) + '"';
