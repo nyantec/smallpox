@@ -19,85 +19,78 @@
  */
 
 function smallpox(id, url, done) {
-	(function (document) {
+	(function (document, clean, state, head, tail, script, buffer, char) {
 		document.spx = document.spx || '';
 
 		document.write = function(chunk) {
 			document.spx += chunk;
 		};
 
-		var script = document.createElement('script');
+		script = document.createElement('script');
 		script.type = 'application/javascript';
 		script.src = url;
 		script.defer = true;
 		script.async = true;
 		script.onload = function() {
-			var capture = document.spx;
+			buffer = document.spx;
 			document.spx = '';
 
-			var state = 0;
-			var clean = '';
+			while (tail < buffer.length) {
+				char = buffer[tail];
 
-			for (var iter = 0; iter < capture.length; ++iter) {
-				switch (state) {
-				case 0:
-					if (capture[iter] === '<')
+				if (state == 0) {
+					if (char == '<')
 						state = 1;
-					break;
-
-				case 1:
-					switch (capture[iter]) {
-					case '>':
-						state = 0;
-						break;
-					case '=':
-						state = 2;
-						break;
-					}
-					break;
-
-				case 2:
-					switch (capture[iter]) {
-					case '"':
-						state = 3;
-						break;
-					case '\'':
-						state = 4;
-						break;
-					default:
-						state = 5;
-						clean += '"';
-						break;
-					}
-					break;
-
-				case 3:
-					if (capture[iter] === '"')
-						state = 1;
-					break;
-
-				case 4:
-					if (capture[iter] === '\'')
-						state = 1;
-
-				case 5:
-					if (capture[iter] === ' ') {
-						clean += '"';
-						state = 1;
-					}
-					break;
 				}
 
-				clean += capture[iter];
+				if (state == 1) {
+					if (char == '>')
+						state = 0;
+					else if (char == '=')
+						state = 2;
+				}
+
+				if (state == 2) {
+					if (char == '"')
+						state = 3;
+					else if (char == '\'')
+						state = 4;
+					else {
+						state = 5;
+						clean += buffer.substring(head, tail) + '"';
+						head = tail;
+					}
+				}
+
+				if (state == 3) {
+					if (char == '"')
+						state = 1;
+				}
+
+				if (state == 4) {
+					if (char == '\'')
+						state = 1;
+				}
+
+				if (state == 5) {
+					if (char == ' ') {
+						state = 1;
+						clean += buffer.substring(head, tail) + '"';
+						head = tail;
+					}
+				}
+
+				++tail;
 			}
 
+			clean += buffer.substring(head, tail);
+
 			document.getElementById(id).innerHTML += clean;
-			delete clean;
 
 			if (done)
 				done();
 		};
 
 		document.getElementsByTagName('head')[0].appendChild(script);
-	})(document);
+	})(document, '', 0, 0, 0);
 }
