@@ -1,16 +1,19 @@
-function smallpox(id, url) {
-	var write = document.write;
-	var capture = '';
+function smallpox(id, url, done) {
+	document.spx = document.spx || '';
 
 	document.write = function(chunk) {
-		capture += chunk;
+		document.spx += chunk;
 	};
 
 	var script = document.createElement('script');
 	script.type = 'application/javascript';
 	script.src = url;
 	script.defer = true;
+	script.async = true;
 	script.onload = function() {
+		var capture = document.spx;
+		document.spx = '';
+
 		var state = 0;
 		var clean = '';
 
@@ -68,7 +71,10 @@ function smallpox(id, url) {
 		}
 
 		document.getElementById(id).innerHTML += clean;
-		document.write = write;
+		delete clean;
+
+		if (done)
+			done();
 	};
 
 	document.getElementsByTagName('head')[0].appendChild(script);
